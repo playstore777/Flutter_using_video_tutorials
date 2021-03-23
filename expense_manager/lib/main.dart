@@ -1,7 +1,8 @@
-import 'package:expense_manager/transaction.dart';
 import 'package:flutter/material.dart';
 
-import 'package:intl/intl.dart';
+import './models/transaction.dart';
+import './widgets/new_transaction.dart';
+import './widgets/transaction_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,8 +23,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final List<Transaction> transaction = [
+class MyHomePage extends StatefulWidget {
+  @override
+  createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
+
+  final List<Transaction> _userTransactions = [
     Transaction(
       id: 't1',
       title: 'Shoes',
@@ -38,96 +47,61 @@ class MyHomePage extends StatelessWidget {
     ),
   ];
 
+  void _addNewTransaction(String txTitle, double txAmount) {
+    final newTx = Transaction(
+        id: DateTime.now().toString(),
+        title: txTitle,
+        amount: txAmount,
+        date: DateTime.now());
+
+    setState(() {
+      _userTransactions.add(newTx);
+    });
+  }
+
+  void startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+        context: ctx,
+        builder: (BuildContext bCtx) {
+          return NewTransaction(_addNewTransaction);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          child: Card(
-            color: Colors.blue,
-            child: Text(
-              'Charts',
-              style: TextStyle(fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('My flutter app'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {},
           ),
-        ),
-        Card(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Title',
-                ),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Amount',
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {},
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: Card(
+                color: Colors.blue,
                 child: Text(
-                  'Add Transaction',
-                  style: TextStyle(
-                    color: Colors.purple,
-                  ),
+                  'Charts',
+                  style: TextStyle(fontSize: 20),
+                  textAlign: TextAlign.center,
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+            TransactionList(_userTransactions),
+          ],
         ),
-        Column(
-          children: transaction
-              .map((trans) => Card(
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          margin: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          child: Text(
-                            '₹ ${trans.amount}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.purple,
-                            ),
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 2,
-                              color: Colors.purple,
-                            ),
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              trans.title,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Text(
-                              DateFormat.yMMMd().format(trans.date),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w200,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ))
-              .toList(),
-        ),
-      ],
+      ),
     );
   }
 }
