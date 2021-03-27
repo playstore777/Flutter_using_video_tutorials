@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        accentColor: Colors.amber,
         primarySwatch: Colors.purple,
       ),
       home: MyHomePage(),
@@ -48,6 +49,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // ),
   ];
 
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((element) => element.id == id);
+    });
+  }
+
   List<Transaction> get _recentTransactions {
     return _userTransactions
         .where(
@@ -60,12 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
         .toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
-        id: DateTime.now().toString(),
-        title: txTitle,
-        amount: txAmount,
-        date: DateTime.now());
+      id: DateTime.now().toString(),
+      title: txTitle,
+      amount: txAmount,
+      date: chosenDate,
+    );
 
     setState(() {
       _userTransactions.add(newTx);
@@ -104,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             Chart(_recentTransactions),
-            TransactionList(_userTransactions),
+            TransactionList(_userTransactions, _deleteTransaction),
           ],
         ),
       ),
