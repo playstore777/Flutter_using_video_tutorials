@@ -44,7 +44,7 @@ class Chart extends StatelessWidget {
     // print(groupedTransactionValues);
     return Card(
       elevation: 6.0,
-      margin: EdgeInsets.all(20),
+      margin: EdgeInsets.all(MediaQuery.of(context).size.height * 0.03),
       child: Row(
           // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: groupedTransactionValues

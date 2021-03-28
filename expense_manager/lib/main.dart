@@ -35,18 +35,54 @@ class _MyHomePageState extends State<MyHomePage> {
   final amountController = TextEditingController();
 
   final List<Transaction> _userTransactions = [
-    // Transaction(
-    //   id: 't1',
-    //   title: 'Shoes',
-    //   amount: 499,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't2',
-    //   title: 'Grocery',
-    //   amount: 300,
-    //   date: DateTime.now(),
-    // ),
+    Transaction(
+      id: 't1',
+      title: 'Shoes',
+      amount: 499,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Grocery',
+      amount: 300,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't1',
+      title: 'Shoes',
+      amount: 499,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Grocery',
+      amount: 300,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't1',
+      title: 'Shoes',
+      amount: 499,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Grocery',
+      amount: 300,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't1',
+      title: 'Shoes',
+      amount: 499,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Grocery',
+      amount: 300,
+      date: DateTime.now(),
+    ),
   ];
 
   void _deleteTransaction(String id) {
