@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import '../screens/meal_detail_screen.dart';
 import '../models/meal.dart';
@@ -11,6 +10,8 @@ class MealItem extends StatelessWidget {
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
+  final Function onPressed;
+
   MealItem({
     @required this.id,
     @required this.affordability,
@@ -18,10 +19,13 @@ class MealItem extends StatelessWidget {
     @required this.duration,
     @required this.imageUrl,
     @required this.title,
+    @required this.onPressed,
   });
   void selectMeal(BuildContext context) {
     Navigator.of(context)
-        .pushNamed(MealDetailScreen.routeName, arguments: {'id': id});
+        .pushNamed(MealDetailScreen.routeName, arguments: {'id': id}).then(
+      (value) => print(value),
+    );
   }
 
   String get complexityText {
