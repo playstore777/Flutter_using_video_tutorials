@@ -29,7 +29,7 @@ class ProductsGrid extends StatelessWidget {
         mainAxisSpacing: 10,
       ),
       itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-        // whenever we replace the screen or abondon this widget
+        // whenever we replace the screen or abandon this widget
         // the changeN....value  also removes the data from the memory
         // as the flutter removes the widget for efficiency.
         value: products[i],

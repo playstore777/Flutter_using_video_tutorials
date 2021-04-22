@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import '../screens/cart_screen.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
-import '../providers/cart.dart';
 import '../widgets/app_drawer.dart';
+import '../providers/cart.dart';
+import '../providers/products.dart';
 
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,23 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    _isLoading = true;
+    // Provider.of<Products>(context).fetchAndSetProducts(); // we get error if we use this, because anything related to context doesn't work
+    Future.delayed(Duration.zero).then((_) {
+      Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+    }).then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    }); // now this, code here future all it does is pushes this code to the last and it will be done after all the sync code is completed, because
+    // dart doesn't care for the time it takes for code to complete rather, it simply pushes all future codes to complete after sync!
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // final productsContainer = Provider.of<Cart>(context);
@@ -71,7 +89,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyFavorites),
     );
   }
 }

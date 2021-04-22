@@ -10,6 +10,7 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
+    // final isFavoriteSave = Provider.of<Products>(context);
     final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -34,6 +35,8 @@ class ProductItem extends StatelessWidget {
               ),
               onPressed: () {
                 product.toggleFavoriteStatus();
+                // isFavoriteSave.isFavoriteSave(product.id, product.isFavorite); // My Approach things!
+                // print('isFavorite : ${product.isFavorite}');
               },
             ),
           ),
@@ -45,6 +48,22 @@ class ProductItem extends StatelessWidget {
             color: Theme.of(context).accentColor,
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: 2),
+                  content: Text(
+                    'Added Item to the cart!',
+                    maxLines: 1,
+                  ),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      cart.removeSingleItem(product.id);
+                    },
+                  ),
+                ),
+              );
               cart.add(
                 product.id,
                 product.price,
