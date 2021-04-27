@@ -20,6 +20,9 @@ class OrderItem {
 }
 
 class Orders with ChangeNotifier {
+  final authToken;
+  final authUserId;
+  Orders(this.authToken, this.authUserId, this._orders);
   List<OrderItem> _orders = [];
 
   List<OrderItem> get orders {
@@ -27,8 +30,8 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders() async {
-    const url =
-        'https://flutter-update-edb26-default-rtdb.firebaseio.com/orders.json';
+    final url =
+        'https://flutter-update-edb26-default-rtdb.firebaseio.com/orders/$authUserId.json?auth=$authToken';
     try {
       final response = await http.get(Uri.parse(url));
       final extractedData = json.decode(response.body) as Map<String,
@@ -64,8 +67,8 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    const url =
-        'https://flutter-update-edb26-default-rtdb.firebaseio.com/orders.json';
+    final url =
+        'https://flutter-update-edb26-default-rtdb.firebaseio.com/orders/$authUserId.json?auth=$authToken';
     final timeStamp = DateTime
         .now(); //To get the exact same time on server and the local list!
     try {

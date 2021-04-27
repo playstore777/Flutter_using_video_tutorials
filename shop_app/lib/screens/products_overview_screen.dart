@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../screens/cart_screen.dart';
+import 'cart_screen.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../widgets/app_drawer.dart';
@@ -21,20 +21,38 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
-  bool _isLoading = false;
+  var _isLoading = false;
+  var _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   void initState() {
-    _isLoading = true;
-    // Provider.of<Products>(context).fetchAndSetProducts(); // we get error if we use this, because anything related to context doesn't work
-    Future.delayed(Duration.zero).then((_) {
-      Provider.of<Products>(context, listen: false).fetchAndSetProducts();
-    }).then((_) {
-      setState(() {
-        _isLoading = false;
-      });
-    }); // now this, code here future all it does is pushes this code to the last and it will be done after all the sync code is completed, because
-    // dart doesn't care for the time it takes for code to complete rather, it simply pushes all future codes to complete after sync!
+    //maybe there is some issue with this below, alternative of(or for the) didChangeD... code!
+    //   _isLoading = true;
+    //   // Provider.of<Products>(context).fetchAndSetProducts(); // we get error if we use this, because anything related to context doesn't work
+    //   Future.delayed(Duration.zero).then((_) {
+    //     Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+    //   }).then((_) {
+    //     setState(() {
+    //       _isLoading = false;
+    //     });
+    //   }); // now this, code here future all it does is pushes this code to the last and it will be done after all the sync code is completed, because
+    //   // dart doesn't care for the time it takes for code to complete rather, it simply pushes all future codes to complete after sync!
     super.initState();
   }
 
@@ -43,7 +61,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
     // final productsContainer = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Shop'),
+        title: Text('MyShop'),
         actions: <Widget>[
           PopupMenuButton(
             onSelected: (FilterOptions selectedValue) {

@@ -26,19 +26,17 @@ class Product with ChangeNotifier {
   }
 
   // Max(Udemy instructors) approach is in writing the code in this function, and my approach is in products.dart!(ofcourse commented out!)
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(authToken, authUserId) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     final url =
-        'https://flutter-update-edb26-default-rtdb.firebaseio.com/products/$id.json';
+        'https://flutter-update-edb26-default-rtdb.firebaseio.com/userFavorites/$authUserId/$id.json?auth=$authToken';
     try {
-      final response = await http.patch(
+      final response = await http.put(
           Uri.parse(
               url), // http for patch, put and delete doesn't notify/send any error message, so, we have to use StatsCode again.
-          body: json.encode({
-            'isFavorite': isFavorite,
-          }));
+          body: json.encode(isFavorite));
       if (response.statusCode >= 400) {
         _setFavValue(oldStatus);
       }
