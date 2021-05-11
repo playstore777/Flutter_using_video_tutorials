@@ -19,29 +19,39 @@ class PlacesListScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: Consumer<GreatPlaces>(
-          child: Center(
-            child: Text('Got no places yet, start adding some!'),
-          ),
-          builder: (ctx, greatPlaces, child) => greatPlaces.items.length <= 0
-              // greatPlaces.items.isEmpty // My approach!
-              ? child
-              : ListView.builder(
-                  itemBuilder: (ctx, index) => ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: FileImage(
-                        greatPlaces.items[index].image,
+        body: FutureBuilder(
+          future: Provider.of<GreatPlaces>(context, listen: false)
+              .fetchAndSetPlaces(),
+          builder: (ctx, snapShot) =>
+              snapShot.connectionState == ConnectionState.waiting
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Consumer<GreatPlaces>(
+                      child: Center(
+                        child: Text('Got no places yet, start adding some!'),
                       ),
+                      builder: (ctx, greatPlaces, child) =>
+                          greatPlaces.items.length <= 0
+                              // greatPlaces.items.isEmpty // My approach!
+                              ? child
+                              : ListView.builder(
+                                  itemBuilder: (ctx, index) => ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage: FileImage(
+                                        greatPlaces.items[index].image,
+                                      ),
+                                    ),
+                                    title: Text(
+                                      greatPlaces.items[index].title,
+                                    ),
+                                    onTap: () {
+                                      // Go to detail page ..
+                                    },
+                                  ),
+                                  itemCount: greatPlaces.items.length,
+                                ),
                     ),
-                    title: Text(
-                      greatPlaces.items[index].title,
-                    ),
-                    onTap: () {
-                      // Go to detail page ..
-                    },
-                  ),
-                  itemCount: greatPlaces.items.length,
-                ),
         ));
   }
 }
