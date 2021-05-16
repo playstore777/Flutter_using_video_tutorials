@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../widgets/auth/auth_form.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -18,8 +20,10 @@ class _AuthScreenState extends State<AuthScreen> {
     String email,
     String password,
     String username,
+    File image,
     bool isLogin,
-    // BuildContext ctx, // Author was getting the issue so he used this approach to solve the issue
+    BuildContext
+        ctx, // Author was getting the issue so he used this approach to solve the issue
   ) async {
     UserCredential userCredential;
     try {
@@ -36,13 +40,24 @@ class _AuthScreenState extends State<AuthScreen> {
           email: email,
           password: password,
         );
+
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_image')
+            .child(userCredential.user.uid + ".jpg");
+        await ref.putFile(image);
+
+        final url = await ref.getDownloadURL();
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user.uid)
             .set({
           'username': username,
           'email': email,
+          'image_url': url,
         });
+        print('userCredentials after set on Firestore instance!');
         setState(() {
           _isLoading = false;
         });
@@ -55,7 +70,7 @@ class _AuthScreenState extends State<AuthScreen> {
       }
 
       print('FirebaseAuthException : ${err.message}');
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(
           content: Text(message),
           backgroundColor: Theme.of(context).errorColor,
@@ -67,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
     } catch (err) {
       print(
           'error in the authscreen : ${err.runtimeType}, $err'); // error type and error
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(
           content: Text(err.toString()),
           backgroundColor: Theme.of(context).errorColor,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/chat/messages.dart';
+import '../widgets/chat/new_message.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -43,7 +44,13 @@ class ChatScreen extends StatelessWidget {
       body: Container(
         child: Column(
           children: <Widget>[
-            Expanded(child: Messages()),
+            Expanded(
+              child: Messages(),
+            ),
+            // Expanded(
+            //   child: NewMessage(),
+            // ),
+            NewMessage(),
           ],
         ),
       ),
